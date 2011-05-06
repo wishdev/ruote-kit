@@ -8,8 +8,11 @@ module RuoteKit
     #
     module LinkHelpers
 
-      # Computing the href for the "as_json" link at the bottom of each page
+      # Computes the path to the JSON alternate version
+      # of the current request uri, used by the the "as_json
+      # link at the bottom of each page.
       #
+      # Returns the String path.
       def as_json
 
         href = request.path + '.json'
@@ -36,23 +39,22 @@ module RuoteKit
           query[:limit] = settings.limit
         end
 
-        rel = query.delete(:rel) || compute_rel(args)
+        rel   = query.delete(:rel) || compute_rel(args)
         title = query.delete(:title)
 
-        query = query.inject({}) { |h, (k, v)| h[k.to_s] = v; h }
-        query = query.keys.sort.collect { |k| "#{k}=#{query[k]}" }.join('&')
-        query = "?#{query}" if query.length > 0
+        query = Rack::Utils.build_query(query.sort)
+        query = "?#{query}" if !query.empty?
 
         if args.empty? or ( ! args.first.match(/^\/\_ruote/))
           args.unshift('/_ruote')
         end
         href = args.join('/')
 
-        href = "#{href}#{query}"
+        href = url("#{href}#{query}", false)
 
         result = {
           'href' => href,
-          'rel' => rel.match(/^#/) ?
+          'rel'  => rel.match(/^#/) ?
             "http://ruote.rubyforge.org/rels.html#{rel}" : rel,
         }
 

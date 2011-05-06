@@ -1,12 +1,13 @@
-
-$:.unshift('.') # 1.9.2
-
 require 'rubygems'
 require 'rubygems/user_interaction' if Gem::RubyGemsVersion == '1.5.0'
+require 'bundler'
 
 require 'rake'
 require 'rake/clean'
 require 'rake/rdoctask'
+require 'rspec/core/rake_task'
+
+Bundler::GemHelper.install_tasks
 
 
 #
@@ -18,11 +19,7 @@ CLEAN.include('pkg', 'rdoc')
 #
 # test / spec
 
-task :spec do
-
-  #sh 'rspec spec/'
-  sh 'bundle exec rspec spec/'
-end
+RSpec::Core::RakeTask.new
 
 task :test => :spec
 task :default => :spec
@@ -31,28 +28,7 @@ task :default => :spec
 #
 # gem
 
-GEMSPEC_FILE = Dir['*.gemspec'].first
-GEMSPEC = eval(File.read(GEMSPEC_FILE))
-GEMSPEC.validate
-
-
-desc %{
-  builds the gem and places it in pkg/
-}
-task :build do
-
-  sh "gem build #{GEMSPEC_FILE}"
-  sh "mkdir pkg" rescue nil
-  sh "mv #{GEMSPEC.name}-#{GEMSPEC.version}.gem pkg/"
-end
-
-desc %{
-  builds the gem and pushes it to rubygems.org
-}
-task :push => :build do
-
-  sh "gem push pkg/#{GEMSPEC.name}-#{GEMSPEC.version}.gem"
-end
+GEMSPEC = Bundler.load_gemspec(Dir['*.gemspec'].first)
 
 
 #

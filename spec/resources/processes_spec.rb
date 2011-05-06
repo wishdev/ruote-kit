@@ -1,6 +1,4 @@
-
-require File.join(File.dirname(__FILE__), '..', 'spec_helper.rb')
-
+require 'spec_helper'
 
 def process_links(wfid)
   [
@@ -397,7 +395,7 @@ describe 'DELETE /_ruote/processes/wfid' do
     delete "/_ruote/processes/#{@wfid}"
 
     last_response.should be_redirect
-    last_response['Location'].should == '/_ruote/processes'
+    last_response['Location'].should == 'http://example.org/_ruote/processes'
 
     wait_for(@wfid)
 
@@ -424,7 +422,7 @@ describe 'DELETE /_ruote/processes/wfid' do
     delete "/_ruote/processes/#{@wfid}?_kill=1"
 
     last_response.should be_redirect
-    last_response['Location'].should == '/_ruote/processes'
+    last_response['Location'].should == 'http://example.org/_ruote/processes'
 
     wait_for(@wfid)
 

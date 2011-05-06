@@ -1,6 +1,4 @@
-
-require File.join(File.dirname(__FILE__), '..', 'spec_helper.rb')
-
+require 'spec_helper'
 
 def workitem_count(from, to, of)
   [
@@ -182,11 +180,12 @@ describe 'GET /_ruote/workitems/expid!subid!wfid' do
 
     before(:each) do
 
-      @wfid = RuoteKit.engine.launch(Ruote.process_definition do
-        sequence do
-          nada :activity => 'Work your magic'
-        end
-      end)
+      @wfid = RuoteKit.engine.launch(
+        Ruote.process_definition(:name => 'x', :rev => 'y') do
+          sequence do
+            nada :activity => 'Work your magic'
+          end
+        end)
 
       RuoteKit.engine.wait_for(:nada)
 
@@ -235,6 +234,14 @@ describe 'GET /_ruote/workitems/expid!subid!wfid' do
 
       last_response.headers.should include('ETag')
       last_response.headers['ETag'].should == "\"#{find_workitem(@wfid, @nada_exp_id).to_h['_rev'].to_s}\""
+    end
+
+    it 'should include a wf_name and a wf_revision (JSON)' do
+
+      get "/_ruote/workitems/#{@fei.sid}.json"
+
+      last_response.json_body['workitem']['wf_name'].should_not == nil
+      last_response.json_body['workitem']['wf_revision'].should_not == nil
     end
   end
 
@@ -294,7 +301,7 @@ describe 'PUT /_ruote/workitems/fei' do
     last_response.should be_redirect
 
     last_response['Location'].should ==
-      "/_ruote/workitems/#{@fei.expid}!#{@fei.subid}!#{@wfid}"
+      "http://example.org/_ruote/workitems/#{@fei.expid}!#{@fei.subid}!#{@wfid}"
 
     find_workitem(@wfid, @nada_exp_id).fields.should == @fields
 
@@ -345,7 +352,7 @@ describe 'PUT /_ruote/workitems/fei' do
       :_proceed => '1')
 
     last_response.should be_redirect
-    last_response['Location'].should == "/_ruote/workitems/#{@wfid}"
+    last_response['Location'].should == "http://example.org/_ruote/workitems/#{@wfid}"
 
     #engine.context[:s_logger].wait_for([
     #  [ :processes, :terminated, { :wfid => @wfid } ],

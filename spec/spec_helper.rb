@@ -1,10 +1,4 @@
-
-HERE = File.dirname(__FILE__) unless defined?(HERE)
-
 ENV['RACK_ENV'] = 'test'
-
-require 'bundler'
-Bundler.setup(:default, :test)
 
 require 'rspec'
 require 'rack/test'
@@ -21,10 +15,15 @@ rescue LoadError
   end
 end
 
-require File.join(HERE, '../lib/ruote-kit')
+
+unless defined?(SPEC_ROOT)
+  SPEC_ROOT = File.expand_path("../", __FILE__)
+end
+
+require File.join(SPEC_ROOT, '../lib/ruote-kit')
 require 'ruote/log/test_logger'
 
-Dir[File.join(HERE, 'support/**/*.rb')].each { |f| require(f) }
+Dir[File.join(SPEC_ROOT, 'support/**/*.rb')].each { |f| require(f) }
 
 
 RSpec.configure do |config|

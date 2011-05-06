@@ -1,6 +1,4 @@
-
-require File.join(File.dirname(__FILE__), 'spec_helper.rb')
-
+require 'spec_helper'
 
 describe RuoteKit::Helpers::RenderHelpers do
 
@@ -56,7 +54,10 @@ describe RuoteKit::Helpers::RenderHelpers do
       class << @resource
         include RuoteKit::Helpers::LinkHelpers
         include RuoteKit::Helpers::JsonHelpers
+        include Sinatra::Helpers
+
         attr_accessor :processes, :count, :skip, :limit, :request
+
         def settings
           OpenStruct.new(:limit => @limit)
         end
@@ -306,5 +307,15 @@ describe RuoteKit::Helpers::RenderHelpers do
     end
 
   end
-end
 
+
+  private
+
+    # Simulates Sinatra::Helpers#uri.
+    def uri(addr = nil, absolute = true, add_script_name = true)
+      addr
+    end
+    alias :url :uri
+    alias :to :uri
+
+end

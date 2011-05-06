@@ -1,9 +1,11 @@
 # encoding: utf-8
+$:.push File.expand_path("../lib", __FILE__)
+require "ruote-kit/version"
 
 Gem::Specification.new do |s|
 
   s.name = 'ruote-kit'
-  s.version = File.read('lib/ruote-kit/version.rb').match(/VERSION = '([^']+)'/)[1]
+  s.version = RuoteKit::VERSION
   s.platform = Gem::Platform::RUBY
   s.authors = [ 'Kenneth Kalmer', 'Torsten Schoenebaum', 'John Mettraux' ]
   s.email = [ 'kenneth.kalmer@gmail.com' ]
@@ -22,8 +24,8 @@ ruote workflow engine, wrapped in a loving rack embrace
     'lib/ruote-kit/public/**/*', 'lib/ruote-kit/views/**/*'
   ] - [ 'rails-template.rb' ]
 
-  s.add_runtime_dependency 'sinatra', '>=1.0'
-  s.add_runtime_dependency 'sinatra-respond_to', '>=0.5.0'
+  s.add_runtime_dependency 'sinatra', '~> 1.2.0'
+  s.add_runtime_dependency 'sinatra-respond_to', '~> 0.7.0'
   s.add_runtime_dependency 'haml', '3.0.25'
 
   s.add_runtime_dependency 'rufus-json', '>= 0.2.5'
@@ -31,7 +33,7 @@ ruote workflow engine, wrapped in a loving rack embrace
   s.add_runtime_dependency('ruote', '>= 2.2.0') unless defined?(Bundler)
     # see Gemfile
 
-  s.add_development_dependency 'rspec', '2.4.0'
+  s.add_development_dependency 'rspec', '~> 2.5.0'
   s.add_development_dependency 'rack-test', '0.5.7'
   s.add_development_dependency 'webrat', '0.7.3'
 

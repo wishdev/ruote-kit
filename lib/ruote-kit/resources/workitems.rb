@@ -62,15 +62,16 @@ class RuoteKit::Application
     end
 
     if options[:proceed]
-      RuoteKit.engine.storage_participant.reply(@workitem)
+      RuoteKit.engine.storage_participant.proceed(@workitem)
     end
 
     respond_to do |format|
 
       format.html do
         redirect(options[:proceed] ?
-          "/_ruote/workitems/#{@workitem.fei.wfid}" :
-          "/_ruote/workitems/#{@workitem.fei.sid}")
+          url("/_ruote/workitems/#{@workitem.fei.wfid}") :
+          url("/_ruote/workitems/#{@workitem.fei.sid}")
+        )
       end
       format.json do
         json :workitem
